@@ -1,0 +1,8 @@
+[
+    { "to": "/", "label": "Dashboard" },
+    { "to": "/orders", "label": "Orders" },
+    { "to": "/cart", "label": "Cart" },
+    { "to": "/account", "label": "Account" },
+    { "to": "/logout", "label": "Logout" }
+  ]
+  
