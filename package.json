@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@monaco-editor/react": "^4.6.0",
-    "react-query": "^3.39.3"
-  }
-}

@@ -1,28 +1,50 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { lazy, Suspense } from "react";
-import Navbar from "./components/ui/Navbar";
-import Footer from "./components/ui/Footer";
+// src/App.js
+import { useState } from 'react';
+import axios from 'axios';
+import CodeEditor from './components/CodeEditor.jsx';
+import Preview from './components/Preview.jsx';
 
-function App() {
+const App = () => {
+  const [code, setCode] = useState(`
+    import React from 'react';
+    const App = () => <h1>Hello World</h1>;
+    ReactDOM.render(<App />, document.getElementById('output'));
+  `);
+  const [packageName, setPackageName] = useState('');
+  const [installedPackages, setInstalledPackages] = useState([]);
 
-  const Home = lazy(() => import("./pages/Home"));
-  const Cart = lazy(() => import("./pages/Cart"));
+  const handlePackageInstall = async () => {
+    if (packageName) {
+      try {
+        await axios.post('http://localhost:5000/api/install-package', { packageName });
+        setInstalledPackages([...installedPackages, packageName]);
+        alert(`Package ${packageName} installed successfully!`);
+        setPackageName('');
+      } catch (error) {
+        alert(`Failed to install ${packageName}`);
+      }
+    }
+  };
 
   return (
-    <>
-      <BrowserRouter>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Navbar />
-          {/* <FlashMessage /> */}
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/cart" element={<Cart />} />
-          </Routes>
-          <Footer />
-        </Suspense>
-      </BrowserRouter>
-    </>
+    <div>
+      <h1>React Code Editor</h1>
+
+      <CodeEditor code={code} setCode={setCode} />
+
+      <div>
+        <input
+          type="text"
+          value={packageName}
+          onChange={(e) => setPackageName(e.target.value)}
+          placeholder="Enter package name"
+        />
+        <button onClick={handlePackageInstall}>Install Package</button>
+      </div>
+
+      <Preview code={code} />
+    </div>
   );
-}
+};
 
 export default App;
